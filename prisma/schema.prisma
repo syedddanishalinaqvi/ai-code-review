@@ -10,8 +10,8 @@ generator client {
 /// A user of your app, logged in via GitHub OAuth.
 model User {
   id            String         @id @default(cuid())
-  githubId      Int            @unique             // GitHub numeric ID
-  username      String         @unique             // GitHub login/handle
+  githubId      Int?            @unique             // GitHub numeric ID
+  username      String?         @unique             // GitHub login/handle
   name          String?                             // Display name
   email         String?         @unique
   avatarUrl     String?

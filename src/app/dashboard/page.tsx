@@ -1,12 +1,13 @@
+'use client'
+import Loading from "@/components/Loading";
 import LogoutButton from "@/components/LogoutButton";
-import {authOptions} from "@/lib/auth";
-import { getServerSession } from "next-auth";
-import { signOut } from "next-auth/react";
+import {useSession } from "next-auth/react";
 import Image from "next/image";
 
-export default async function Dashboard(){
-    const session=await getServerSession(authOptions)
+export default function Dashboard(){
+    const {data:session,status}=useSession()
 
+    if(status==="loading") return <Loading/>
     if(!session){
         return {
             redirect:{
@@ -18,10 +19,10 @@ export default async function Dashboard(){
         console.log(session)
     }
     return(
-        <div className="p-6">
+      <div className="p-6">
       <header className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">AI Code Reviewer</h1>
-        {session && (
+        {session? (
           <div className="flex items-center space-x-3">
             <a
               href="https://www.github.com"
@@ -44,7 +45,7 @@ export default async function Dashboard(){
             <LogoutButton/>
             </div>
           </div>
-        )}
+        ):<Loading/>}
       </header>
 
       {/* Placeholder content */}

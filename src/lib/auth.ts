@@ -1,5 +1,6 @@
 import NextAuth from "next-auth/next";
 import GithubProvider from "next-auth/providers/github";
+import prisma from "./prismaClient";
 
 
 export const authOptions = {
@@ -8,7 +9,13 @@ export const authOptions = {
       clientId: process.env.GITHUB_ID as string,
       clientSecret: process.env.GITHUB_SECRET as string,
     }),
+
   ],
+  callbacks:{
+    
+  }
+
+
 //   callbacks:{
 //     async session({session,user}:{session:Session,user:User}){
 //         return session
