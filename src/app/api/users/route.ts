@@ -5,7 +5,7 @@ import prisma from "@/lib/prismaClient"
 
 export async function POST(req:Request){
     try{
-        const body = await req.json();
+    const body = await req.json();
     const {name,email,avatarUrl}=body;
 
     if(!name||!email){

@@ -3,9 +3,17 @@ import Loading from "@/components/Loading";
 import LogoutButton from "@/components/LogoutButton";
 import {useSession } from "next-auth/react";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 export default function Dashboard(){
     const {data:session,status}=useSession()
+    // const [repositories,setRepositories]=useState<object[]|null>();
+
+    // useEffect(()=>{
+    //   fetch('/api/webhook')
+    //   .then(res=>res.json())
+    //   .then(newRes=>setRepositories(newRes))
+    // },[repositories])
 
     if(status==="loading") return <Loading/>
     if(!session){
@@ -49,8 +57,16 @@ export default function Dashboard(){
       </header>
 
       {/* Placeholder content */}
-      <section className="bg-white text-black shadow rounded p-4">
-        <p>No PRs reviewed yet. Connect a repo to start.</p>
+      <section className=" flex justify-center bg-white text-black shadow rounded p-4">
+        <div className="text-center">
+        <div><p>No PRs reviewed yet. Install App to see your repos.</p></div>
+        <div><button className=" px-3 py-1 bg-gray-800 text-white rounded hover:bg-gray-700 transition" onClick={()=>window.open("https://github.com/apps/ai-code-reviews","_blank")}>Install APP </button></div>
+        </div>
+        {/* {
+        repositories?.map((repo)=>{
+            return <div key={repo.id}>{repo.name}</div>
+          })
+        } */}
       </section>
     </div>
     )

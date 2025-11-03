@@ -7,16 +7,16 @@ generator client {
   provider = "prisma-client-js"
 }
 
-/// A user of your app, logged in via GitHub OAuth.
+
 model User {
   id            String         @id @default(cuid())
-  githubId      Int?            @unique             // GitHub numeric ID
-  username      String?         @unique             // GitHub login/handle
-  name          String?                             // Display name
+  githubId      Int?            @unique             
+  username      String?         @unique             
+  name          String?                             
   email         String?         @unique
   avatarUrl     String?
-  installations Installation[]                       // Linked installations
-  reviews       Review[]                             // Reviews they've triggered
+  installations Installation[]                       
+  reviews       Review[]                            
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
 }
