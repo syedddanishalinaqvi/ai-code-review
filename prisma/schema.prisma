@@ -1,52 +1,67 @@
-datasource db {
-  provider = "postgresql"  // or "sqlite" for a quick MVP
-  url      = env("DB_URL")
-}
 
 generator client {
   provider = "prisma-client-js"
 }
 
+datasource db {
+  provider = "postgresql"
+  url=env("DB_URL")
+}
 
 model User {
-  id            String         @id @default(cuid())
-  githubId      Int?            @unique             
-  username      String?         @unique             
-  name          String?                             
-  email         String?         @unique
-  avatarUrl     String?
-  installations Installation[]                       
-  reviews       Review[]                            
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  id        String  @id @default(cuid())
+  email     String  @unique
+  githubId  String? @unique
+  avatarUrl String?
+  name      String?
+
+  // Each user has only one GitHub installation
+  installation Installation?
+  reviews      Review[]
 }
 
-/// A GitHub App installation (mapping between your app and a repo owner/account)
 model Installation {
-  id             String   @id @default(cuid())
-  installationId Int      @unique                     // GitHub installation ID
-  ownerLogin     String                               // e.g. "octocat"
-  ownerId        Int                                  // GitHub's owner numeric ID
-  accountType    String                               // "User" or "Organization"
-  repositories   Json                                 // Store repo list or keep minimal & fetch later
-  user           User     @relation(fields: [userId], references: [id])
-  userId         String
-  reviews        Review[]
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id             Int    @id @default(autoincrement()) // Prisma internal ID
+  installationId Int    @unique // GitHub installation ID
+  accountLogin   String
+  accountType    String // user/org
+  userId         String @unique // One installation per user
+  user           User   @relation(fields: [userId], references: [id])
+  repositories Repository[]
+  createdAt DateTime @default(now())
 }
 
-/// Stores results of AI reviews on specific pull requests
+model Repository {
+  id       Int    @id @default(autoincrement())
+  repoId   Int    @unique
+  name     String
+  fullName String @unique
+  installationId Int
+  installation Installation @relation(fields:[installationId],references: [installationId], onDelete: Cascade)
+  pullRequests PullRequest[]
+
+  createdAt DateTime @default(now())
+}
+
+model PullRequest {
+  id           Int        @id @default(autoincrement())
+  number       Int
+  title        String
+  state        String
+  authorLogin  String
+  repositoryId Int
+  repository   Repository @relation(fields: [repositoryId], references: [id])
+
+  reviews   Review[]
+  createdAt DateTime @default(now())
+}
+
 model Review {
-  id             String       @id @default(cuid())
-  installation   Installation @relation(fields: [installationId], references: [id])
-  installationId String
-  user           User         @relation(fields: [userId], references: [id])
-  userId         String
-  repoName       String
-  prNumber       Int
-  prTitle        String
-  aiSummary      String        // Overall summary text
-  aiComments     Json          // Optional: store detailed comments as JSON
-  createdAt      DateTime      @default(now())
+  id          Int         @id @default(autoincrement())
+  content     String
+  pullId      Int
+  userId      String
+  user        User        @relation(fields: [userId], references: [id])
+  pullRequest PullRequest @relation(fields: [pullId], references: [id])
+  createdAt   DateTime    @default(now())
 }
