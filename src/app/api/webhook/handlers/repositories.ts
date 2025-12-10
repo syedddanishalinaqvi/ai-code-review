@@ -2,7 +2,7 @@ import prisma from "@/lib/prismaClient";
 
 interface Installation {
   id: number;
-  installationId:number,
+  installationId: number;
 }
 interface Repository {
   id: number;
@@ -15,26 +15,75 @@ interface Repository {
 //   repositories: Repository[];
 //   sender: object;
 // }
-export async function addRepositories({repos,installation}:{repos:Repository[],installation:Installation}){
-    if (Array.isArray(repos)) {
-        const allRepos=await Promise.all(
-          repos.map((repo: Repository) => {
-            return prisma.repository.upsert({
-              where: { repoId: repo.id },
-              update: {
-                name: repo.name,
-                fullName: repo.full_name,
-                installationId: installation.installationId,
-              },
-              create: {
-                repoId:repo.id,
-                name: repo.name,
-                fullName:repo.full_name,
-                installationId:installation.installationId
-              },
-            });
-          })
-        );
-        return allRepos;
-      }
+export async function addRepositories({
+  repos,
+  installation,
+}: {
+  repos: Repository[];
+  installation: Installation;
+}) {
+  if (Array.isArray(repos)) {
+    const allRepos = await Promise.all(
+      repos.map((repo: Repository) => {
+        return prisma.repository.upsert({
+          where: { repoId: repo.id },
+          update: {
+            name: repo.name,
+            fullName: repo.full_name,
+            installationId: installation.installationId,
+          },
+          create: {
+            repoId: repo.id,
+            name: repo.name,
+            fullName: repo.full_name,
+            installationId: installation.installationId,
+          },
+        });
+      })
+    );
+    return allRepos;
+  }
+}
+
+export async function removeRepositories(repos: Repository) {
+  if (Array.isArray(repos)) {
+    const removedRepos = await Promise.all(
+      repos.map((repo: Repository) => {
+        return prisma.repository.delete({
+          where: { repoId: repo.id },
+        });
+      })
+    );
+    return removedRepos;
+  }
+}
+
+export async function addedRepositories({
+  repos,
+  installation,
+}: {
+  repos: Repository[];
+  installation: Installation;
+}) {
+  if (Array.isArray(repos)) {
+    const addedRepos = await Promise.all(
+      repos.map((repo: Repository) => {
+        return prisma.repository.upsert({
+          where: { repoId: repo.id },
+          update: {
+            name: repo.name,
+            fullName: repo.full_name,
+            installationId: installation.id,
+          },
+          create: {
+            repoId: repo.id,
+            name: repo.name,
+            fullName: repo.full_name,
+            installationId: installation.id,
+          },
+        });
+      })
+    );
+    return addedRepos;
+  }
 }

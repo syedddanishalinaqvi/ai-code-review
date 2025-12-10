@@ -1,5 +1,6 @@
 // import { prisma } from "../../../lib/prismaClient";
 import { installationCreated, installationDeleted } from "./handlers/installation";
+import { addedRepositories, removeRepositories } from "./handlers/repositories";
 
 export async function POST(req: Request) {
   try {
@@ -35,12 +36,32 @@ export async function POST(req: Request) {
               return new Response(JSON.stringify({message:"User not deleted",error:error}))
             }
           }
-        case "pull_request":
-          try{
+        case "installation_repositories":
+          if(payload.action==="added"){
+            try{
+              if(!payload.repositories_added){
+                return new Response(JSON.stringify({message:"No repositories found to added"}))
+              }
+              const addedRepo=await addedRepositories({repos:payload.repositories_added,installation:payload.installation});
+              return new Response(JSON.stringify({message:"new repo added",repos:addedRepo}))
 
+            }
+            catch(error){
+              return new Response(JSON.stringify({message:"Repo not added",error:error}))
+            }
           }
-          catch{
+          if(payload.action==="removed"){
+            try{
+              if(!payload.repositories_removed){
+                return new Response(JSON.stringify({message:"No repositories found to remove"}))
+              }
+              const deletedRepo=await removeRepositories(payload.repositories_removed);
+              return new Response(JSON.stringify({message:"no repo removed",repos:deletedRepo}))
 
+            }
+            catch(error){
+              return new Response(JSON.stringify({message:"Repo not deleted",error:error}))
+            }
           }
       }
     console.log("Unhandled event")

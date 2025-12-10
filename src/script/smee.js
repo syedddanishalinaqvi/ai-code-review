@@ -1,7 +1,7 @@
 import SmeeClient from 'smee-client';
 
 const smee = new SmeeClient({
-  source: 'https://smee.io/UmxLGMbFQ80PiUt', 
+  source: 'https://smee.io/S0AULYAwK2mTutM7', 
   target: 'http://localhost:3000/api/webhook',
   logger: console,
 });
