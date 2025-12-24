@@ -1,4 +1,4 @@
-import { getInstallationOctokit } from "@/lib/github/installation";
+import { getInstallationOctokit} from "@/lib/github/octokitInstance";
 
 export async function pullRequest({
   installationId,
