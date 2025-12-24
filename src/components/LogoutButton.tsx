@@ -1,10 +1,10 @@
-"use client"; // Needed for interactivity
+"use client"; 
 
 import { signOut } from "next-auth/react";
 
 export default function LogoutButton() {
-  const handleLogout = async () => {
-    await signOut({ callbackUrl: "/login" });
+  const handleLogout =async () => {
+    await signOut({callbackUrl: "/login" });
   };
 
   return (

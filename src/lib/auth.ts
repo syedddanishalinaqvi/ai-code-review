@@ -1,7 +1,6 @@
 import GithubProvider from "next-auth/providers/github";
 import {prisma}  from "./prismaClient";
-import NextAuth, { Account, User } from "next-auth"
-
+import NextAuth, { Account, User} from "next-auth"
 
 
 export const authOptions = {
@@ -28,7 +27,7 @@ export const authOptions = {
         },
       });
       return true;
-    }, 
+    },
   },
 };
 

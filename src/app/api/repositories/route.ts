@@ -20,6 +20,5 @@ export async function GET() {
         }
     }
   });
-  console.log(user?.installation?.repositories)
   return new Response(JSON.stringify(user?.installation?.repositories??[]));
 }

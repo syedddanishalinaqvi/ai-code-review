@@ -1,5 +1,6 @@
 // import { prisma } from "../../../lib/prismaClient";
 import { installationCreated, installationDeleted } from "./handlers/installation";
+import { pullRequest } from "./handlers/pullRequests";
 import { addedRepositories, removeRepositories } from "./handlers/repositories";
 
 export async function POST(req: Request) {
@@ -61,6 +62,17 @@ export async function POST(req: Request) {
             }
             catch(error){
               return new Response(JSON.stringify({message:"Repo not deleted",error:error}))
+            }
+          }
+        case "pull_request":
+          if(payload.action==="opened"){
+            try{
+              const files=await pullRequest({installationId:payload.installation.id,owner:payload.repository.owner.login,repo:payload.repository.name,pullNumber:payload.pull_request.number})
+              console.log(files);
+              return new Response(JSON.stringify({message:"Files found with this pull number",files:files}))
+            }
+            catch(error){
+              return new Response(JSON.stringify({message:"Please check yout pull request with opened case",error:error}))
             }
           }
       }

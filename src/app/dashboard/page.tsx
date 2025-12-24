@@ -26,42 +26,55 @@ const mockReviews: Review[] = [
     id: 1,
     repoName: "ai-code-reviews",
     commitMessage: "Added new authentication feature",
-    aiReview: "✅ Code looks good!\n\n**Strengths:**\n- Clean implementation of OAuth\n- Proper error handling\n- Good TypeScript types\n\n**Suggestions:**\n- Consider adding rate limiting\n- Add unit tests for auth flow",
+    aiReview:
+      "✅ Code looks good!\n\n**Strengths:**\n- Clean implementation of OAuth\n- Proper error handling\n- Good TypeScript types\n\n**Suggestions:**\n- Consider adding rate limiting\n- Add unit tests for auth flow",
     timestamp: "2 hours ago",
-    status: "approved"
+    status: "approved",
   },
   {
     id: 2,
     repoName: "frontend-app",
     commitMessage: "Fixed responsive layout issues",
-    aiReview: "⚠️ Changes needed\n\n**Issues Found:**\n- Missing mobile breakpoints for tablet view\n- Accessibility: Add ARIA labels\n\n**Recommendations:**\n- Test on actual devices\n- Use CSS Grid for better layout control",
+    aiReview:
+      "⚠️ Changes needed\n\n**Issues Found:**\n- Missing mobile breakpoints for tablet view\n- Accessibility: Add ARIA labels\n\n**Recommendations:**\n- Test on actual devices\n- Use CSS Grid for better layout control",
     timestamp: "5 hours ago",
-    status: "changes-needed"
+    status: "changes-needed",
   },
   {
     id: 3,
     repoName: "backend-api",
     commitMessage: "Optimized database queries",
-    aiReview: "💬 Comments\n\n**Observations:**\n- Good use of indexes\n- Query performance improved by 40%\n\n**Minor Notes:**\n- Consider connection pooling\n- Document the new query patterns",
+    aiReview:
+      "💬 Comments\n\n**Observations:**\n- Good use of indexes\n- Query performance improved by 40%\n\n**Minor Notes:**\n- Consider connection pooling\n- Document the new query patterns",
     timestamp: "1 day ago",
-    status: "commented"
-  }
+    status: "commented",
+  },
 ];
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
   const [repos, setRepos] = useState<repo[]>([]);
-  const [activeTab, setActiveTab] = useState<"repositories" | "reviews">("repositories");
+  const [activeTab, setActiveTab] = useState<"repositories" | "reviews">(
+    "repositories"
+  );
   const [selectedReview, setSelectedReview] = useState<Review | null>(null);
 
-  useEffect(() => {
-    fetch("/api/repositories")
+  const getRepos = async () => {
+    await fetch("/api/repositories")
       .then((response) => response.json())
       .then((data: repo[]) => setRepos(data));
+  };
+
+  useEffect(() => {
+    getRepos();
+    // const interval = setInterval(() => {
+    //   getRepos();
+    // }, 5000);
+    // return () => clearInterval(interval);
   }, []);
 
   if (status === "loading") return <Loading />;
-  console.log(session)
+  console.log(session);
   if (!session) {
     return {
       redirect: {
@@ -103,7 +116,7 @@ export default function Dashboard() {
             {session && (
               <div className="flex items-center gap-3 md:gap-4">
                 <a
-                  href={`https://github.com/${session.user?.name}`}
+                  href={`https://github.com`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-all duration-300 rounded-full px-3 md:px-4 py-2 border border-white/20"
@@ -131,19 +144,21 @@ export default function Dashboard() {
           <div className="flex border-b border-gray-200">
             <button
               onClick={() => setActiveTab("repositories")}
-              className={`flex-1 px-6 py-4 font-semibold text-sm md:text-base transition-all duration-200 ${activeTab === "repositories"
+              className={`flex-1 px-6 py-4 font-semibold text-sm md:text-base transition-all duration-200 ${
+                activeTab === "repositories"
                   ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white"
                   : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                }`}
+              }`}
             >
               📁 Repositories ({repos.length})
             </button>
             <button
               onClick={() => setActiveTab("reviews")}
-              className={`flex-1 px-6 py-4 font-semibold text-sm md:text-base transition-all duration-200 ${activeTab === "reviews"
+              className={`flex-1 px-6 py-4 font-semibold text-sm md:text-base transition-all duration-200 ${
+                activeTab === "reviews"
                   ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white"
                   : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                }`}
+              }`}
             >
               ✨ AI Reviews ({mockReviews.length})
             </button>
@@ -157,8 +172,18 @@ export default function Dashboard() {
                 <div className="text-center py-16 px-4">
                   <div className="mb-6">
                     <div className="w-24 h-24 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <svg className="w-12 h-12 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                      <svg
+                        className="w-12 h-12 text-purple-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                        />
                       </svg>
                     </div>
                     <h3 className="text-2xl font-bold text-gray-900 mb-3">
@@ -168,7 +193,9 @@ export default function Dashboard() {
                       You haven't installed the AI Code Reviews app yet.
                     </p>
                     <p className="text-gray-500 text-sm mb-8 max-w-md mx-auto">
-                      Install our GitHub app to connect your repositories and start receiving AI-powered code reviews on every pull request.
+                      Install our GitHub app to connect your repositories and
+                      start receiving AI-powered code reviews on every pull
+                      request.
                     </p>
                   </div>
                   <button
@@ -180,13 +207,22 @@ export default function Dashboard() {
                       )
                     }
                   >
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+                    <svg
+                      className="w-5 h-5"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                        clipRule="evenodd"
+                      />
                     </svg>
                     Install GitHub App
                   </button>
                   <p className="text-xs text-gray-500 mt-6">
-                    Free to install • Takes less than a minute • No credit card required
+                    Free to install • Takes less than a minute • No credit card
+                    required
                   </p>
                 </div>
               )
@@ -202,21 +238,41 @@ export default function Dashboard() {
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-2">
-                            <span className={`text-xs px-3 py-1 rounded-full font-semibold border ${getStatusColor(review.status)}`}>
-                              {getStatusIcon(review.status)} {review.status.replace("-", " ").toUpperCase()}
+                            <span
+                              className={`text-xs px-3 py-1 rounded-full font-semibold border ${getStatusColor(
+                                review.status
+                              )}`}
+                            >
+                              {getStatusIcon(review.status)}{" "}
+                              {review.status.replace("-", " ").toUpperCase()}
                             </span>
-                            <span className="text-sm text-gray-500">{review.timestamp}</span>
+                            <span className="text-sm text-gray-500">
+                              {review.timestamp}
+                            </span>
                           </div>
                           <h4 className="text-lg font-semibold text-gray-900 group-hover:text-purple-600 transition-colors">
                             {review.commitMessage}
                           </h4>
                           <p className="text-sm text-gray-600 mt-1">
-                            Repository: <span className="font-medium text-purple-600">{review.repoName}</span>
+                            Repository:{" "}
+                            <span className="font-medium text-purple-600">
+                              {review.repoName}
+                            </span>
                           </p>
                         </div>
                         <div className="text-gray-400 group-hover:text-purple-600 transition-colors">
-                          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          <svg
+                            className="w-6 h-6"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 5l7 7-7 7"
+                            />
                           </svg>
                         </div>
                       </div>
@@ -229,7 +285,8 @@ export default function Dashboard() {
                       No Reviews Yet
                     </h3>
                     <p className="text-gray-600">
-                      AI reviews will appear here when pull requests are created.
+                      AI reviews will appear here when pull requests are
+                      created.
                     </p>
                   </div>
                 )}
@@ -245,15 +302,29 @@ export default function Dashboard() {
             <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-6 text-white">
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="text-2xl font-bold mb-2">{selectedReview.commitMessage}</h3>
-                  <p className="text-purple-100">Repository: {selectedReview.repoName}</p>
+                  <h3 className="text-2xl font-bold mb-2">
+                    {selectedReview.commitMessage}
+                  </h3>
+                  <p className="text-purple-100">
+                    Repository: {selectedReview.repoName}
+                  </p>
                 </div>
                 <button
                   onClick={() => setSelectedReview(null)}
                   className="text-white hover:bg-white/20 rounded-full p-2 transition-all duration-200"
                 >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   </svg>
                 </button>
               </div>

@@ -32,18 +32,18 @@ import { cookies } from "next/headers";
 //     }
 // }
 
-export async function GET(req:Request,res:Response){
-    try{
-        const cookie=await cookies()
-        const userID=cookie.get('userID')
-        const getUser=await prisma.user.findFirst({where:{id:userID?.value}})
-        console.log(getUser)
-        return new Response(JSON.stringify(getUser))
-    }
-    catch{
-    return new Response(JSON.stringify({name:'Danish'}))
-    }
-}
+// export async function GET(req:Request,res:Response){
+//     try{
+//         const cookie=await cookies()
+//         const userID=cookie.get('userID')
+//         const getUser=await prisma.user.findFirst({where:{id:userID?.value}})
+//         console.log(getUser)
+//         return new Response(JSON.stringify(getUser))
+//     }
+//     catch{
+//     return new Response(JSON.stringify({name:'Danish'}))
+//     }
+// }
 // export const getUserHandler=async(req:NextApiRequest,res:NextApiResponse)=>{
 //     const {id}=req.body;
 //     const user=await prisma.user.findUnique(id)
