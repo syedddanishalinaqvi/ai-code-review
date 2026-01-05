@@ -1,5 +1,5 @@
 import GithubProvider from "next-auth/providers/github";
-import {prisma}  from "./prismaClient";
+import {prisma}  from "../prisma/prismaClient";
 import NextAuth, { Account, User} from "next-auth"
 
 

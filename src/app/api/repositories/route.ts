@@ -1,5 +1,5 @@
-import auth, {authOptions} from "@/lib/auth";
-import prisma from "@/lib/prismaClient";
+import auth, {authOptions} from "@/lib/next-auth/auth";
+import prisma from "@/lib/prisma/prismaClient";
 import { getServerSession } from "next-auth";
 
 export async function GET() {

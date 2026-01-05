@@ -1,4 +1,4 @@
-import prisma from "@/lib/prismaClient";
+import prisma from "@/lib/prisma/prismaClient";
 
 interface Installation {
   id: number;

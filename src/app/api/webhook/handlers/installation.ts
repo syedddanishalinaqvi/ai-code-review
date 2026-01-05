@@ -1,6 +1,7 @@
-import prisma from "@/lib/prismaClient";
+import prisma from "@/lib/prisma/prismaClient";
 import { addRepositories } from "./repositories";
 import { getInstallationOctokit } from "@/lib/github/octokitInstance";
+import fetchRepoFiles from "@/lib/github/fetchRepo";
 
 interface Installation {
   id: number;
@@ -69,7 +70,10 @@ export async function installationCreated(payload: Payload) {
   
   const repositories=await addRepositories({repos,installation});
   const octokitInstance=await getInstallationOctokit(payload.installation.id);
-  console.log({"installation":installation,"Repos":repositories,"OctokitInstance":octokitInstance.rest.repos.getContent});
+  const owner=payload.installation.account.login;
+  const repo=payload.repositories[0].name;
+  const getContent=await fetchRepoFiles({octokit:octokitInstance,owner,repo})
+  console.log({"installation":installation,"Repos":repositories,"repoTree":getContent});
   return new Response(
     JSON.stringify({ data: installation }),
     {

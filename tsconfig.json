@@ -23,6 +23,6 @@
       }
     ],
   },
-  "include": ["next-env.d.ts","src", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts","src/**/*.ts", "src/testPRfiles.js", "src/app/testPRfiles.js"],
+  "include": ["next-env.d.ts","src", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts","src/**/*.ts"],
   "exclude": ["node_modules"]
 }

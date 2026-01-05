@@ -1,53 +1,70 @@
-// import { Octokit } from "octokit";
+import { Octokit } from "octokit";
 
-// export async function fetchFileContent(
-//   {octokit,
-//   owner,
-//   repo,
-//   path}:{octokit:Octokit, owner:string, repo:string,path:string}
-// ) {
-//   const response = await octokit.rest.repos.getContent({
-//     owner,
-//     repo,
-//     path,
-//   });
+async function fetchFileContent({
+  octokit,
+  owner,
+  repo,
+  path,
+}: {
+  octokit: Octokit;
+  owner: string;
+  repo: string;
+  path: string;
+}) {
+  const response = await octokit.rest.repos.getContent({
+    owner,
+    repo,
+    path,
+  });
 
-//   if (!("content" in response.data)) return null;
+  if (!("content" in response.data)) return null;
 
-//   return Buffer
-//     .from(response.data.content, "base64")
-//     .toString("utf-8");
-// }
+  return Buffer.from(response.data.content, "base64").toString("utf-8");
+}
 
-// export async function fetchRepoFiles({
-//   octokit,
-//   owner,
-//   repo,
-// }:{octokit:Octokit, owner:string, repo:string}) {
-//   const tree = await octokit.rest.git.getTree({
-//     owner,
-//     repo,
-//     tree_sha: "HEAD",
-//     recursive: "true",
-//   });
-//   const result = [];
+export default async function fetchRepoFiles({
+  octokit,
+  owner,
+  repo,
+}: {
+  octokit: Octokit;
+  owner: string;
+  repo: string;
+}) {
+  const tree = await octokit.rest.git.getTree({
+    owner,
+    repo,
+    tree_sha: "HEAD",
+    recursive: "true",
+  });
 
-//   for (const file of tree.data.tree) {
-//     const content = await fetchFileContent({
-//       octokit,
-//       owner,
-//       repo,
-//       file.path
-//   });
+  const NotAllowedExtensions = [".png", ".ico", ".txt", ".svg", ".md"];
+  const files = tree.data.tree.filter((item) => {
+    if (item.type !== "blob") return false;
+    if (NotAllowedExtensions.some((ext) => item.path.endsWith(ext))) {
+      return false;
+    }
+    return item;
+  });
 
-//     if (!content) continue;
+  const result = [];
 
-//     result.push({
-//       path: file.path,
-//       content,
-//       language: file.path.split(".").pop(),
-//     });
-//   }
+  for (const file of files) {
+    const content = await fetchFileContent({
+      octokit,
+      owner,
+      repo,
+      path: file.path,
+    });
 
-//   return result;
-// }
+    if (!content) continue;
+
+    result.push({
+      path: file.path,
+      content,
+      language: file.path.split(".").pop(),
+    });
+  }
+
+  return result;
+}
