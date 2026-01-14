@@ -1,68 +1,50 @@
-# 🤖 AI Code Reviews
+# 🤖 AI Code Reviews — Context-Aware GitHub App
 
-An **AI-powered GitHub App** that automatically reviews pull requests and repositories using Large Language Models (LLMs), helping developers write cleaner, more maintainable code.
+**AI Code Reviews** is a **context-aware GitHub App** that performs intelligent code reviews by understanding the **entire repository**, not just the lines changed in a pull request.
 
----
-
-## 🚀 Features
-
-- ✅ GitHub App integration (install on selected repositories)
-- ✅ Secure authentication using **NextAuth (GitHub OAuth)**
-- ✅ Automatic repository syncing on app installation
-- ✅ Webhook handling for:
-  - App installation & deletion
-  - Repository add/remove events
-- ✅ Persistent storage using **Prisma + PostgreSQL**
-- ✅ Modern UI built with **Next.js App Router**
-- ✅ Scalable backend architecture
-- 🚧 *(Planned)* AI-based pull request review using LLMs
+Unlike traditional AI reviewers that only analyze diffs, this product builds a **semantic understanding of the full codebase** using embeddings and a vector database, enabling **high-quality, relevant, and maintainable review suggestions**.
 
 ---
 
-## 🏗 Tech Stack
+## 🚀 Product Vision
 
-### Frontend
-- Next.js (App Router)
-- React + TypeScript
-- Tailwind CSS
-- NextAuth.js
+Modern code reviews require **context**:
+- Existing architecture
+- Utility functions
+- Design patterns
+- Prior implementation decisions
 
-### Backend
-- Next.js API Routes
-- Prisma ORM
-- PostgreSQL
-- GitHub Webhooks
-- GitHub App Authentication
-
-### AI (Upcoming)
-- OpenAI / LLM-based code analysis
-- Pull Request summarization & suggestions
+**AI Code Reviews** solves this by indexing the full repository and using **Retrieval-Augmented Generation (RAG)** to deliver reviews that feel like they came from a senior engineer who already knows the codebase.
 
 ---
 
-## 🔐 Authentication Flow
+## ✨ Key Features
 
-1. User signs in using **GitHub OAuth**
-2. GitHub user data is stored in the database
-3. User installs the GitHub App on selected repositories
-4. Installation webhook stores:
-   - Installation ID
-   - Linked repositories
-   - User ↔ Installation relation
+### 🔗 GitHub App Integration
+- Install the app on a selected repository
+- Secure GitHub App authentication
+- Fine-grained repository permissions
+
+### 🧠 Repository-Level Intelligence
+- Fetches full repository structure and source code
+- Converts code into vector embeddings
+- Stores embeddings in a vector database for fast semantic retrieval
+
+### 🔍 Context-Aware Pull Request Reviews
+- Listens to pull request webhooks
+- Fetches PR diffs automatically
+- Retrieves **relevant historical code context**
+- Sends PR diff + context to an LLM for review
+
+### ⚡ Cost-Efficient AI
+- Uses **local LLMs and embeddings via Ollama**
+- No dependency on paid APIs
+- Fully self-hostable AI pipeline
 
 ---
 
-## 🔁 Webhook Handling
+## 🏗 Product Architecture
 
-This app listens to the following GitHub webhook events:
-
-| Event | Purpose |
-|------|--------|
-| `installation.created` | Store installation & repositories |
-| `installation.deleted` | Remove installation & related repos |
-| `installation_repositories.added` | Add repositories |
-| `installation_repositories.removed` | Remove repositories |
-| `push` | *(Planned)* Trigger AI review |
-| `pull_request` | *(Planned)* AI PR review |
+[<img src="https://app.eraser.io/workspace/Orpd3xZCuABoNPES0ZO6?origin=share&elements=-9sDBG9hzII40yxSS_J3cA">]
 
 
