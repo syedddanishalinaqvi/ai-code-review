@@ -1,4 +1,4 @@
-# 🤖 AI Code Reviews — Context-Aware GitHub App
+# AI Code Reviews — Context-Aware GitHub App
 
 **AI Code Reviews** is a **context-aware GitHub App** that performs intelligent code reviews by understanding the **entire repository**, not just the lines changed in a pull request.
 
@@ -6,7 +6,7 @@ Unlike traditional AI reviewers that only analyze diffs, this product builds a *
 
 ---
 
-## 🚀 Product Vision
+## Product Vision
 
 Modern code reviews require **context**:
 - Existing architecture
@@ -18,33 +18,33 @@ Modern code reviews require **context**:
 
 ---
 
-## ✨ Key Features
+## Key Features
 
-### 🔗 GitHub App Integration
+### GitHub App Integration
 - Install the app on a selected repository
 - Secure GitHub App authentication
 - Fine-grained repository permissions
 
-### 🧠 Repository-Level Intelligence
+### Repository-Level Intelligence
 - Fetches full repository structure and source code
 - Converts code into vector embeddings
 - Stores embeddings in a vector database for fast semantic retrieval
 
-### 🔍 Context-Aware Pull Request Reviews
+### Context-Aware Pull Request Reviews
 - Listens to pull request webhooks
 - Fetches PR diffs automatically
 - Retrieves **relevant historical code context**
 - Sends PR diff + context to an LLM for review
 
-### ⚡ Cost-Efficient AI
+### Cost-Efficient AI
 - Uses **local LLMs and embeddings via Ollama**
 - No dependency on paid APIs
 - Fully self-hostable AI pipeline
 
 ---
 
-## 🏗 Product Architecture
+## Product Architecture
 
-[<img src="https://app.eraser.io/workspace/Orpd3xZCuABoNPES0ZO6?origin=share&elements=-9sDBG9hzII40yxSS_J3cA">]
+![title](public/high-level-archi.png)
 
 
