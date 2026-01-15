@@ -85,3 +85,5 @@ export async function POST(req: Request) {
     return new Response("Error", { status: 500 });
   }
 }
+
+export const runtime = "nodejs";

@@ -1,7 +1,10 @@
+import "server-only";
 import prisma from "@/lib/prisma/prismaClient";
 import { addRepositories } from "./repositories";
 import { getInstallationOctokit } from "@/lib/github/octokitInstance";
 import fetchRepoFiles from "@/lib/github/fetchRepo";
+import {callLancedb} from "@/lib/embeddings/storeembeddings";
+
 
 interface Installation {
   id: number;
@@ -73,7 +76,8 @@ export async function installationCreated(payload: Payload) {
   const owner=payload.installation.account.login;
   const repo=payload.repositories[0].name;
   const getContent=await fetchRepoFiles({octokit:octokitInstance,owner,repo})
-  console.log({"installation":installation,"Repos":repositories,"repoTree":getContent});
+  const dbtable=await callLancedb();
+  console.log({"installation":installation,"Repos":repositories,"repoTree":getContent,"lanceDB":dbtable});
   return new Response(
     JSON.stringify({ data: installation }),
     {
