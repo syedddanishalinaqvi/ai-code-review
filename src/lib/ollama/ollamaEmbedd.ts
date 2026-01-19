@@ -1,15 +1,12 @@
 import {Ollama} from "ollama";
 
-
-
-
-export default async function test(prompt:string){
-
+export default async function ollama(prompt:string){
 const ollama = new Ollama();
 
 const response = await ollama.embeddings({
   model: "nomic-embed-text:latest",
   prompt,
 });
-console.log(response)
+console.log(response.embedding.length);
+return response;
 }

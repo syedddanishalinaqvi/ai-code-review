@@ -38,7 +38,9 @@ export default async function fetchRepoFiles({
     recursive: "true",
   });
 
-  const NotAllowedExtensions = [".png", ".ico", ".txt", ".svg", ".md"];
+  console.log(tree)
+
+  const NotAllowedExtensions = [".png", ".ico", ".txt", ".svg", ".md", "lock.json"];
   const files = tree.data.tree.filter((item) => {
     if (item.type !== "blob") return false;
     if (NotAllowedExtensions.some((ext) => item.path.endsWith(ext))) {
@@ -63,8 +65,9 @@ export default async function fetchRepoFiles({
       path: file.path,
       content,
       language: file.path.split(".").pop(),
+      commitSha:tree.data.sha,
     });
   }
-
+  console.log("results length", result.length);
   return result;
 }

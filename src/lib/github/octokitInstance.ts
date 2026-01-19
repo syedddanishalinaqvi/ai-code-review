@@ -8,6 +8,5 @@ export async function getInstallationOctokit(installationId: number) {
   const octokitInstance = await app.getInstallationOctokit(
     installationId
   );
-  console.log({octpkitInstance:octokitInstance})
   return octokitInstance;
 }

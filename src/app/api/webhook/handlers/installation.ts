@@ -3,12 +3,13 @@ import prisma from "@/lib/prisma/prismaClient";
 import { addRepositories } from "./repositories";
 import { getInstallationOctokit } from "@/lib/github/octokitInstance";
 import fetchRepoFiles from "@/lib/github/fetchRepo";
-import {callLancedb} from "@/lib/embeddings/storeembeddings";
-
+import { callLancedb } from "@/lib/embeddings/storeembeddings";
+import storeData from "./storeData";
+import { connectdb } from "@/lib/lancedb/lancedb";
 
 interface Installation {
   id: number;
-  installationId:number,
+  installationId: number;
   account: Account;
 }
 interface Account {
@@ -70,16 +71,31 @@ export async function installationCreated(payload: Payload) {
       userId: user.id,
     },
   });
-  
-  const repositories=await addRepositories({repos,installation});
-  const octokitInstance=await getInstallationOctokit(payload.installation.id);
-  const owner=payload.installation.account.login;
-  const repo=payload.repositories[0].name;
-  const getContent=await fetchRepoFiles({octokit:octokitInstance,owner,repo})
-  const dbtable=await callLancedb();
-  console.log({"installation":installation,"Repos":repositories,"repoTree":getContent,"lanceDB":dbtable});
+
+  const repositories = await addRepositories({ repos, installation });
+  const octokitInstance = await getInstallationOctokit(payload.installation.id);
+  const owner = payload.installation.account.login;
+  const repo = payload.repositories[0].name;
+  const getContent = await fetchRepoFiles({
+    octokit: octokitInstance,
+    owner,
+    repo,
+  });
+  const dbcontent = await storeData(
+    getContent,
+    owner,
+    payload.installation.id,
+    repo
+  );
+  // console.log({"installation":installation,"Repos":repositories,"repoTree":getContent,});
+  console.log({ "content for db": dbcontent });
   return new Response(
-    JSON.stringify({ data: installation }),
+    JSON.stringify({
+      data: installation,
+      Repos: repositories,
+      repoTree: getContent,
+      // contentfordb:dbcontent
+    }),
     {
       status: 200,
     }
@@ -114,6 +130,13 @@ export async function installationDeleted(payload: Payload) {
   const DeletedInstallation = await prisma.installation.delete({
     where: { userId: user.id },
   });
+  const embeddb = await connectdb("data/sample-lancedb");
+  if(!embeddb){
+    return new Response(JSON.stringify({messgae:"connect to db failed"}))
+  }
+  const embedDBResponse=await embeddb.dropTable("embeddings");
+  console.log("✅ embeddings table deleted",embedDBResponse);
+
   console.log(DeletedInstallation);
   return new Response(JSON.stringify({ data: DeletedInstallation }), {
     status: 200,

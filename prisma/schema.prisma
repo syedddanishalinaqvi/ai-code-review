@@ -21,11 +21,11 @@ model User {
 }
 
 model Installation {
-  id             Int    @id @default(autoincrement()) // Prisma internal ID
-  installationId Int    @unique // GitHub installation ID
+  id             Int    @id @default(autoincrement())
+  installationId Int    @unique
   accountLogin   String
-  accountType    String // user/org
-  userId         String @unique // One installation per user
+  accountType    String 
+  userId         String @unique 
   user           User   @relation(fields: [userId], references: [id])
   repositories Repository[]
   createdAt DateTime @default(now())
